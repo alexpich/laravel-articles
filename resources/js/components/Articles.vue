@@ -1,6 +1,15 @@
 <template>
   <div>
     <h2>Articles</h2>
+    <form class="mb-3" @submit.prevent="addArticle">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title" v-model="article.title" />
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" placeholder="Body" v-model="article.body"></textarea>
+      </div>
+      <button type="submit" class="btn btn-block btn-primary">Submit</button>
+    </form>
     <nav aria-label="Page navigation">
       <ul class="pagination">
         <li v-bind:class="[{disabled:!pagination.prev_page_url}]" class="page-item">
@@ -23,6 +32,7 @@
       <h3>{{ article.title }}</h3>
       <p>{{ article.body }}</p>
       <hr />
+      <button class="btn btn-warning mb-2" @click="editArticle(article)">Edit</button>
       <button class="btn btn-danger" @click="deleteArticle(article.id)">Delete</button>
     </div>
   </div>
@@ -80,6 +90,50 @@ export default {
           })
           .catch(err => console.log(err));
       }
+    },
+    addArticle() {
+      if (this.edit === false) {
+        // Add
+        fetch("api/article", {
+          method: "post",
+          body: JSON.stringify(this.article),
+          headers: {
+            "content-type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            this.article.title = "";
+            this.article.body = "";
+            alert("Article added.");
+            this.fetchArticles();
+          })
+          .catch(err => console.log());
+      } else {
+        // Update
+        fetch("api/article", {
+          method: "put",
+          body: JSON.stringify(this.article),
+          headers: {
+            "content-type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            this.article.title = "";
+            this.article.body = "";
+            alert("Article updated.");
+            this.fetchArticles();
+          })
+          .catch(err => console.log());
+      }
+    },
+    editArticle(article) {
+      this.edit = true;
+      this.article.id = article.id;
+      this.article.article_id = article.id;
+      this.article.title = article.title;
+      this.article.body = article.body;
     }
   }
 };
