@@ -68,8 +68,18 @@ export default {
 
       this.pagination = pagination;
     },
-    deleteArticle() {
-      
+    deleteArticle(id) {
+      if (confirm("Are you sure?")) {
+        fetch(`api/article/${id}`, {
+          method: "delete"
+        })
+          .then(res => res.json())
+          .then(data => {
+            alert("Article removed");
+            this.fetchArticles();
+          })
+          .catch(err => console.log(err));
+      }
     }
   }
 };

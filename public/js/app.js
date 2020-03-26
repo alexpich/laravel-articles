@@ -1979,7 +1979,23 @@ __webpack_require__.r(__webpack_exports__);
       };
       this.pagination = pagination;
     },
-    deleteArticle: function deleteArticle() {}
+    deleteArticle: function deleteArticle(id) {
+      var _this2 = this;
+
+      if (confirm("Are you sure?")) {
+        fetch("api/article/".concat(id), {
+          method: "delete"
+        }).then(function (res) {
+          return res.json();
+        }).then(function (data) {
+          alert("Article removed");
+
+          _this2.fetchArticles();
+        })["catch"](function (err) {
+          return console.log(err);
+        });
+      }
+    }
   }
 });
 
